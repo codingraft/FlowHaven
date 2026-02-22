@@ -552,7 +552,7 @@ export default function AnalyticsPage() {
                             <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full" style={{ background: 'var(--bg-surface)', color: 'var(--text-tertiary)' }}>
                                 {focusByDay.reduce((s, v) => s + v, 0).toFixed(1)}h total
                             </span>
-                        </div>
+                        </div> 
                         <div className="grid grid-cols-7 gap-2">
                             {focusByDay.map((hours, i) => {
                                 const max = Math.max(...focusByDay, 0.1);
