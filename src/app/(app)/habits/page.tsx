@@ -77,12 +77,17 @@ export default function HabitsPage() {
         e.preventDefault();
         if (!user) return;
         const supabase = createClient();
-        const { data } = await supabase.from("habits").insert({
+        const { data, error } = await supabase.from("habits").insert({
             name: form.name, icon: form.icon, frequency: form.frequency,
             linked_goal_id: form.linked_goal_id || null,
             streak: 0, longest_streak: 0, completions: [],
             user_id: user.id, created_at: new Date().toISOString(),
         }).select().single();
+        if (error) {
+            console.error("Habit create error:", error);
+            toast.error("Failed to create habit: " + error.message);
+            return;
+        }
         if (data) addHabit(data);
         setShowModal(false);
         setForm({ name: "", icon: "⭐", frequency: "daily", linked_goal_id: "" });

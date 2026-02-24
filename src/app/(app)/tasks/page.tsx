@@ -101,18 +101,28 @@ export default function TasksPage() {
         const encNotes = form.notes ? await encryptField(form.notes) : null;
 
         if (editId) {
-            await supabase.from("tasks").update({
+            const { error } = await supabase.from("tasks").update({
                 title: encTitle, notes: encNotes, priority: form.priority, due_date: form.due_date || null,
                 linked_goal_id: form.linked_goal_id || null,
             }).eq("id", editId);
+            if (error) {
+                console.error("Task update error:", error);
+                toast.error("Failed to update task: " + error.message);
+                return;
+            }
             updateTask(editId, { title: form.title, notes: form.notes, priority: form.priority, due_date: form.due_date, linked_goal_id: form.linked_goal_id || undefined });
             toast.success("Task updated");
         } else {
-            const { data } = await supabase.from("tasks").insert({
+            const { data, error } = await supabase.from("tasks").insert({
                 title: encTitle, notes: encNotes, priority: form.priority, due_date: form.due_date || null,
                 linked_goal_id: form.linked_goal_id || null,
                 completed: false, user_id: user.id, created_at: new Date().toISOString(),
             }).select().single();
+            if (error) {
+                console.error("Task create error:", error);
+                toast.error("Failed to create task: " + error.message);
+                return;
+            }
             if (data) addTask({ ...data, title: form.title, notes: form.notes });
             toast.success("Task created!");
         }

@@ -103,9 +103,9 @@ export default function JournalPage() {
             }
             await invalidateEntity('journal');
 
-        } catch (e) {
+        } catch (e: any) {
             console.error(e);
-            toast.error("Failed to save journal");
+            toast.error("Failed to save journal: " + (e.message || "Unknown error"));
         } finally {
             setSaving(false);
         }
